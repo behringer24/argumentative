@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// struct for a single configured flag
 type BoolFlag struct {
 	Longflag    string
 	Shortflag   string
@@ -12,6 +13,7 @@ type BoolFlag struct {
 	Value       *bool
 }
 
+// Factory to generate a new flag
 func NewBoolFlag(longflag string, shortflag string, description string) BoolFlag {
 	flag := BoolFlag{
 		Longflag:    longflag,
@@ -24,6 +26,7 @@ func NewBoolFlag(longflag string, shortflag string, description string) BoolFlag
 	return flag
 }
 
+// Generate the string for the long description
 func (f *BoolFlag) GetLongDescription() string {
 	flagnames := ""
 	if f.Shortflag != "" {
@@ -37,6 +40,7 @@ func (f *BoolFlag) GetLongDescription() string {
 	return output
 }
 
+// Generate the string for a short description in the 'Usage:' line
 func (f *BoolFlag) GetShortDescription() string {
 	output := " ["
 	if f.Shortflag != "" {

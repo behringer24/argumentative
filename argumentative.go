@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// struct with all maps that hold the different flag types
 type Flags struct {
 	boolflags   map[string]BoolFlag
 	stringflags map[string]StringFlag
@@ -12,6 +13,7 @@ type Flags struct {
 	shortflags map[byte]string
 }
 
+// constructor like chain command to init all maps
 func (f *Flags) Flags() *Flags {
 	if f.stringflags == nil {
 		f.boolflags = make(map[string]BoolFlag)
@@ -22,6 +24,7 @@ func (f *Flags) Flags() *Flags {
 	return f
 }
 
+// Add string type flag to map and return pointer to value
 func (f *Flags) AddString(longflag string, shortflag string, required bool, defaultvalue string, description string) *string {
 	f.stringflags[longflag] = NewStringFlag(longflag, shortflag, required, defaultvalue, description)
 	if shortflag != "" {
@@ -30,6 +33,7 @@ func (f *Flags) AddString(longflag string, shortflag string, required bool, defa
 	return f.stringflags[longflag].Value
 }
 
+// Add boolean type flag to map and return pointer to value
 func (f *Flags) AddBool(longflag string, shortflag string, description string) *bool {
 	f.boolflags[longflag] = NewBoolFlag(longflag, shortflag, description)
 	if shortflag != "" {
@@ -38,15 +42,18 @@ func (f *Flags) AddBool(longflag string, shortflag string, description string) *
 	return f.boolflags[longflag].Value
 }
 
+// Add positional argument to map and return pointer to value
 func (f *Flags) AddPositional(longflag string, required bool, defaultvalue string, description string) *string {
 	f.positionals = append(f.positionals, NewPositional(longflag, required, defaultvalue, description))
 	return f.positionals[len(f.positionals)-1].Value
 }
 
+// Check if argument is a flag or positional argument
 func (f *Flags) isFlag(name string) bool {
 	return name[0] == '-'
 }
 
+// Get name of flag and translate short flags to their long equivalent
 func (f *Flags) GetFlagName(name string) string {
 	var longname string
 	if len(name) > 1 && name[0] == '-' {
@@ -60,6 +67,7 @@ func (f *Flags) GetFlagName(name string) string {
 	return ""
 }
 
+// Validate the parameters and check if all required parameters have a value
 func (f *Flags) Validate() (err error) {
 	for _, flag := range f.stringflags {
 		if flag.Required && *flag.Value == "" {
@@ -74,9 +82,10 @@ func (f *Flags) Validate() (err error) {
 	return nil
 }
 
+// Parse arguments
 func (f *Flags) Parse(args []string) (err error) {
 	positional := 0
-	i := 1
+	i := 1 // leave out the first one as this is usually the (cli-) command itself
 	for i < len(args) {
 		if f.isFlag(args[i]) {
 			// Parse flags with string values
@@ -90,6 +99,7 @@ func (f *Flags) Parse(args []string) (err error) {
 			} else {
 				return fmt.Errorf("unknown flag %s", args[i])
 			}
+			// Parse positional arguments sequentially while there are unset ones
 		} else if positional < len(f.positionals) {
 			*f.positionals[positional].Value = args[i]
 			positional += 1
@@ -101,6 +111,7 @@ func (f *Flags) Parse(args []string) (err error) {
 	return f.Validate()
 }
 
+// Print usage instructions
 func (f *Flags) Usage(name string, description string, err error) {
 	if err != nil {
 		fmt.Println("Error:", err)

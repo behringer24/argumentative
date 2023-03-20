@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// struct for a single configured flag
 type StringFlag struct {
 	Longflag    string
 	Shortflag   string
@@ -13,6 +14,7 @@ type StringFlag struct {
 	Value       *string
 }
 
+// Factory to generate a new flag
 func NewStringFlag(longflag string, shortflag string, required bool, defaultvalue string, description string) StringFlag {
 	flag := StringFlag{
 		Longflag:    longflag,
@@ -29,6 +31,7 @@ func NewStringFlag(longflag string, shortflag string, required bool, defaultvalu
 	return flag
 }
 
+// Generate the string for the long description
 func (f *StringFlag) GetLongDescription() string {
 	flagnames := ""
 	if f.Shortflag != "" {
@@ -46,6 +49,7 @@ func (f *StringFlag) GetLongDescription() string {
 	return output
 }
 
+// Generate the string for a short description in the 'Usage:' line
 func (f *StringFlag) GetShortDescription() string {
 	output := " "
 	if !f.Required {
