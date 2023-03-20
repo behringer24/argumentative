@@ -63,12 +63,12 @@ func (f *Flags) GetFlagName(name string) string {
 func (f *Flags) Validate() (err error) {
 	for _, flag := range f.stringflags {
 		if flag.Required && *flag.Value == "" {
-			return fmt.Errorf("flag %s missing", flag.Longflag)
+			return fmt.Errorf("required flag --%s missing", flag.Longflag)
 		}
 	}
 	for _, positional := range f.positionals {
 		if positional.Required && *positional.Value == "" {
-			return fmt.Errorf("positional argument %s missing", positional.Longflag)
+			return fmt.Errorf("required positional argument [%s] missing", positional.Longflag)
 		}
 	}
 	return nil
