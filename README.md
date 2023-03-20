@@ -2,7 +2,7 @@
 Go argument parser fast and simple
 
 ## Why
-I experimented with a lot of Go command line argument parsers to build simple but powerful cli applications. I like thge way that pythons argparse module works but did not find a suitable replacemant for my current Go projects. Some seem to be abandoned and even the big framework like tools did not handle positional arguments like I would like them to work. So this is because and because: Why not.
+I experimented with a lot of Go command line argument parsers to build simple but powerful cli applications. I like the way that pythons _argparse_ module works, but did not find a suitable replacemant for my current Go projects. Some seem to be abandoned and even the big framework-like tools did not handle positional arguments like I would like them to work. So this is because and because: Why not?
 
 ## Installation
 ```
@@ -13,9 +13,9 @@ go get -u -v https://github.com/behringer24/argumentative
 There are no dependencies beside the "fmt", so thats a "no dependencies".
 
 ## Usage
-The simple structure of the argumentative code required to get your parameters is
+The simple structure of the argumentative package, that is required to get your parameters is:
 
-* init a flags object
+* init a flags object from the package
 * define you flags
 * call the Parse method to get the values
 * handle the errors or override flags and display the usage instructions
@@ -62,10 +62,10 @@ func parseArgs() {
 		flags.Usage(title, description, nil)
 		os.Exit(0)
 	} else if *showVer {
-		fmt.Print("argtest version " + version)
+		fmt.Print(title, "version", version)
 		os.Exit(0)
 	} else if err != nil {
-		flags.Usage("argtest", "A small demonstartion", err)
+		flags.Usage(title, description, err)
 		os.Exit(1)
 	}
 }
@@ -79,14 +79,14 @@ func main() {
 
 In the var block all the parameter holders are defined. argumentative returns pointers to the internal value fields and fills them after the ``flags.Parse(os.Args)`` call.
 
-Parsing of the parameters has been move out of ``main()`` into its own function.
+Parsing of the parameters has been move out of ``main()`` into its own 'parseArgs' function.
 
-There are also the definitions of all available parameters and arguments.
+There are also the definitions of all available parameters and arguments for this demo app.
 
 ```
 go run .\argtest.go -h
 ```
-result in the output of
+result in the output:
 ```
 argtest
 A small demonstration
@@ -105,13 +105,13 @@ Positional arguments:
 infile                   File to read from
 outfile                  File to write to
 ```
-omitting a required parameter (in this case for example we omit the `-t` parameter)
+omitting a required parameter results in an error message. In this case as an example we omit the required `-t` parameter:
 ```
 go run .\argtest.go foo
 ```
-results in an output of
+results in the output:
 ```
-Error: flag test missing
+Error: required flag --test missing
 
 Usage: argtest [-h] [--version] -t [-n] infile [outfile]
 
@@ -128,9 +128,9 @@ infile                   File to read from
 outfile                  File to write to
 exit status 1
 ```
-while we satisfied the required parameter `infile` with `foo`.
+Notice that we satisfied the required parameter `infile` with `foo` in the above example.
 
-If we add a parameter `--version` or `--help` the output of the errors of the missing parameters is supressed. This has to be handled in the application code and is _not_ part of the argumentative lib.
+If we add a parameter `--version` or `--help` the output of the errors of the missing parameters is supressed. This behavior has to be handled in the application code and is _not_ part of the argumentative lib.
 
 ## Add Parameters to your cli app
 ### Add boolean parameter
