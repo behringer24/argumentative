@@ -1,6 +1,8 @@
 # argumentative
 Go argument parser fast and simple
 
+[![Build + Test](https://github.com/behringer24/argumentative/actions/workflows/go.yml/badge.svg)](https://github.com/behringer24/argumentative/actions/workflows/go.yml)
+
 ## Why
 I experimented with a lot of Go command line argument parsers to build simple but powerful cli applications. I like the way that pythons _argparse_ module works, but did not find a suitable replacemant for my current Go projects. Some seem to be abandoned and even the big framework-like tools did not handle positional arguments like I would like them to work. So this is because and because: Why not?
 
