@@ -8,7 +8,7 @@ I experimented with a lot of Go command line argument parsers to build simple bu
 
 ## Installation
 ```
-go get -u -v https://github.com/behringer24/argumentative
+go get -u -v github.com/behringer24/argumentative
 ```
 
 ### Dependencies
