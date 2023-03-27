@@ -1,7 +1,11 @@
 # argumentative
 Go argument parser fast and simple
 
-[![Build + Test](https://github.com/behringer24/argumentative/actions/workflows/go.yml/badge.svg)](https://github.com/behringer24/argumentative/actions/workflows/go.yml)
+[![Build + Test](https://github.com/behringer24/argumentative/actions/workflows/go.yml/badge.svg)](https://github.com/behringer24/argumentative/actions/workflows/go.yml) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/behringer24/argumentative.svg)](https://pkg.go.dev/github.com/behringer24/argumentative)
+
+https://pkg.go.dev/github.com/behringer24/argumentative
+
 
 ## Why
 I experimented with a lot of Go command line argument parsers to build simple but powerful cli applications. I like the way that pythons _argparse_ module works, but did not find a suitable replacemant for my current Go projects. Some seem to be abandoned and even the big framework-like tools did not handle positional arguments like I would like them to work. So this is because and because: Why not?
@@ -192,3 +196,8 @@ result = flags.Flags().AddPositional("longname", required, "default", "Descripti
 `Descriptive help text` A brief description of the parameter. Keep it short and simple, may be omitted but why should you?
 
 Consider the order of positional arguments in your command line. Optional arguments must come last as they would be confused with other arguments. Required arguments must come first. If you are struggling consider to use named string flags.
+
+## License
+
+Argumentative is released under the GNU GENERAL PUBLIC LICENSE Version 3. See [LICENSE](https://github.com/behringer24/argumentative/blob/main/LICENSE)
+
