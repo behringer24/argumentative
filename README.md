@@ -12,7 +12,7 @@ I experimented with a lot of Go command line argument parsers to build simple bu
 
 ## Installation
 ```
-go get -u -v https://github.com/behringer24/argumentative
+go get -u -v github.com/behringer24/argumentative
 ```
 
 ### Dependencies
@@ -200,3 +200,4 @@ Consider the order of positional arguments in your command line. Optional argume
 ## License
 
 Argumentative is released under the GNU GENERAL PUBLIC LICENSE Version 3. See [LICENSE](https://github.com/behringer24/argumentative/blob/main/LICENSE)
+
