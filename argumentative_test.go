@@ -44,6 +44,9 @@ func TestFlagsIntegration(t *testing.T) {
 	stringflag := flags.Flags().AddString("stringname", "s", true, "", "stringdescription")
 	boolflag := flags.Flags().AddBool("boolname", "b", "booldescription")
 	positional := flags.Flags().AddPositional("positionalname", false, "positionaldefault", "positionaldescription")
+	optx := flags.Flags().AddBool("optx", "x", "Option X")
+	opty := flags.Flags().AddBool("opty", "y", "Option Y")
+	optz := flags.Flags().AddBool("optz", "z", "Option Z")
 
 	var args []string
 
@@ -89,6 +92,35 @@ func TestFlagsIntegration(t *testing.T) {
 
 	if *positional != "positionalvalue" {
 		t.Errorf("Wrong positional value, got [%s], want [%s]", *positional, "positionalvalue")
+	}
+
+	args = append(args, "-xy")
+	err = flags.Parse(args)
+
+	if err != nil {
+		t.Errorf("Error found, got [%s], want nil", err.Error())
+	}
+
+	if !*optx {
+		t.Errorf("Wrong combined boolflag value, got [%t], want [%t]", *optx, true)
+	}
+
+	if !*opty {
+		t.Errorf("Wrong combined boolflag value, got [%t], want [%t]", *opty, true)
+	}
+
+	args = append(args, "-sz")
+	err = flags.Parse(args)
+	await = "options with parameters can not be combined -sz"
+
+	if err == nil {
+		t.Errorf("No error found, got [%p], want pointer", err)
+	} else if err.Error() != await {
+		t.Errorf("Wrong error message, got [%s], want [%s]", err, await)
+	}
+
+	if *optz {
+		t.Errorf("Wrong combined boolflag value, got [%t], want [%t]", *optz, false)
 	}
 }
 
