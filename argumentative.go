@@ -67,14 +67,24 @@ func (f *Flags) isFlag(name string) bool {
 	return name[0] == '-'
 }
 
+// Check if argument is a long flag
+func (f *Flags) isLongFlag(name string) bool {
+	return len(name) > 1 && name[0] == '-' && name[1] == '-'
+}
+
 // Get name of flag and translate short flags to their long equivalent
-func (f *Flags) GetFlagName(name string) string {
+func (f *Flags) GetFlagName(name string, pos int) string {
 	var longname string
+
 	if len(name) > 1 && name[0] == '-' {
 		if len(name) > 2 && name[1] == '-' {
 			longname = name[2:]
 		} else {
-			longname = f.shortflags[name[1]]
+			if pos < len(name) {
+				longname = f.shortflags[name[pos]]
+			} else {
+				return ""
+			}
 		}
 		return longname
 	}
@@ -103,15 +113,33 @@ func (f *Flags) Parse(args []string) (err error) {
 	for i < len(args) {
 		if f.isFlag(args[i]) {
 			// Parse flags with string values
-			if _, ok := f.stringflags[f.GetFlagName(args[i])]; ok {
-				*f.stringflags[f.GetFlagName(args[i])].Value = args[i+1]
+			if _, ok := f.stringflags[f.GetFlagName(args[i], 1)]; ok {
+				if !f.Flags().isLongFlag(args[i]) && len(args[i]) > 2 {
+					return fmt.Errorf("options with parameters can not be combined %s", args[i])
+				}
+				*f.stringflags[f.GetFlagName(args[i], 1)].Value = args[i+1]
 				i += 1
-			} else
-			// Parse flags the switch to true if exists
-			if _, ok := f.boolflags[f.GetFlagName(args[i])]; ok {
-				*f.boolflags[f.GetFlagName(args[i])].Value = true
 			} else {
-				return fmt.Errorf("unknown flag %s", args[i])
+				// Parse flags the switch to true if exists, allow "-xvzf" as combinations
+				if f.isLongFlag(args[i]) {
+					if _, ok := f.boolflags[f.GetFlagName(args[i], 1)]; ok {
+						*f.boolflags[f.GetFlagName(args[i], 1)].Value = true
+					} else {
+						return fmt.Errorf("unknown flag %s", args[i])
+					}
+				} else {
+					for j := 1; j < len(args[i]); j++ {
+						if _, ok := f.boolflags[f.GetFlagName(args[i], j)]; ok {
+							*f.boolflags[f.GetFlagName(args[i], j)].Value = true
+						} else {
+							if _, ok := f.stringflags[f.GetFlagName(args[i], j)]; ok {
+								return fmt.Errorf("options with parameters can not be combined: %c in %s", args[i][j], args[i])
+							} else {
+								return fmt.Errorf("unknown flag -%c", args[i][j])
+							}
+						}
+					}
+				}
 			}
 			// Parse positional arguments sequentially while there are unset ones
 		} else if positional < len(f.positionals) {
